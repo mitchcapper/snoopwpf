@@ -13,6 +13,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using JetBrains.Annotations;
 using Snoop.Infrastructure;
@@ -20,6 +21,15 @@ using Snoop.Windows;
 
 public class TreeItem : INotifyPropertyChanged, IDisposable
 {
+    public static readonly ExportOptions DefaultExportOptions = new ExportOptions
+    {
+        ExportXamlStyle = true,
+        IncludeDefaultEmptyValues = false,
+        IncludeTypenameOnlyValues = false,
+        IncludeSystemCollectionNamespaceValues = false,
+        RoundDecimals = true
+    };
+
     private bool isExpanded;
     private bool isSelected;
 
@@ -115,11 +125,44 @@ public class TreeItem : INotifyPropertyChanged, IDisposable
                     new Separator(),
                     new MenuItem { Header = "Element (with filter)", Command = SnoopUI.ExportTreeWithFilterCommand, CommandParameter = new ExportOptions { Recurse = false, TreeItem = this, UseFilter = true } },
                     new MenuItem { Header = "Element (without filter)", Command = SnoopUI.ExportTreeWithFilterCommand, CommandParameter = new ExportOptions { Recurse = false, TreeItem = this, UseFilter = false } },
+                    new Separator(),
+                    new MenuItem
+                    {
+                        Header = "Export Options",
+                        Items =
+                        {
+                            MakeCheckableMenuItem("Export XAML Style", nameof(ExportOptions.ExportXamlStyle),"XAML style puts the controls type as the element name and most of the properties directly on the node itself rather than as child nodes with more metadata.  The output will look more like XAML."),
+                            new Separator(),
+                            MakeCheckableMenuItem("Include Default/Empty Values", nameof(ExportOptions.IncludeDefaultEmptyValues), "Values that equal the default for that valuetype. ie: If the type is nullable, null.  If the type is bool, false.  This is NOT necessarily default value for the dependency property (ie: a control may have a bool property IsEnabled that by default is true, even if the user has set this to false on the control it will not show up with this option enabled as the default value for a bool is false."),
+                            MakeCheckableMenuItem("Include Typename Only Values", nameof(ExportOptions.IncludeTypenameOnlyValues), "Values that when converted to a string are just the stringified version of the typename.  Note, this cannot ignore complex generic typenames"),
+                            MakeCheckableMenuItem("Include System.Collections Namespace Values", nameof(ExportOptions.IncludeSystemCollectionNamespaceValues), "Values that are System.Collections.* generics, generally these are just typenames, ie: List<Item>."),
+                            new Separator(),
+                            MakeCheckableMenuItem("Round Decimals", nameof(ExportOptions.RoundDecimals),"Round numerical values to 1 decimal place, ie 3.3"),
+                        }
+                    }
                 }
             }
         };
 
         return items;
+    }
+
+    private static MenuItem MakeCheckableMenuItem(string header, string bindingPath, string tooltip = "")
+    {
+        var menuItem = new MenuItem
+        {
+            Header = header,
+            IsCheckable = true,
+            StaysOpenOnClick = true,
+        };
+        if (!string.IsNullOrWhiteSpace(tooltip))
+        {
+            menuItem.ToolTip = tooltip;
+        }
+
+        BindingOperations.SetBinding(menuItem, MenuItem.IsCheckedProperty, new Binding(bindingPath) { Source = DefaultExportOptions, Mode = BindingMode.TwoWay });
+
+        return menuItem;
     }
 
     public bool IsSelected

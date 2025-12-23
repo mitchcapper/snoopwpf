@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <TargetFrameworks>$(MinCoreTargetFramework);$(MinTargetFramework)</TargetFrameworks>
-
+    <LangVersion>14.0</LangVersion>
     <RootNamespace>Snoop</RootNamespace>
 
     <UseWpf>true</UseWpf>

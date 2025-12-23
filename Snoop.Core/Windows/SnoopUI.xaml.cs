@@ -528,6 +528,12 @@ public sealed partial class SnoopUI : INotifyPropertyChanged
             var options = (ExportOptions)e.Parameter;
             var propertyFilter = options.UseFilter ? this.PropertyGrid.PropertyFilter : null;
 
+            options.ExportXamlStyle = TreeItem.DefaultExportOptions.ExportXamlStyle;
+            options.IncludeDefaultEmptyValues = TreeItem.DefaultExportOptions.IncludeDefaultEmptyValues;
+            options.IncludeTypenameOnlyValues = TreeItem.DefaultExportOptions.IncludeTypenameOnlyValues;
+            options.IncludeSystemCollectionNamespaceValues = TreeItem.DefaultExportOptions.IncludeSystemCollectionNamespaceValues;
+            options.RoundDecimals = TreeItem.DefaultExportOptions.RoundDecimals;
+
             var treeItem = options.TreeItem ?? this.CurrentSelection;
 
             if (treeItem is null)

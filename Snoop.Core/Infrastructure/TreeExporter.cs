@@ -2,8 +2,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Windows;
 using System.Xml;
 using Snoop.Data.Tree;
@@ -14,62 +16,80 @@ public static class TreeExporter
     {
         new XMLTreeExporter().Export(treeItem, textWriter, filter, recurse);
     }
+
+    public static void Export(TreeItem treeItem, TextWriter textWriter, PropertyFilter? filter, ExportOptions options)
+    {
+        new XMLTreeExporter().Export(treeItem, textWriter, filter, options);
+    }
 }
 
-public class ExportOptions : DependencyObject
+/* Without disabling these two warnings the code becomes very odd when trying to set the default value.
+    public bool UseFilter
 {
-    public static readonly DependencyProperty TreeItemProperty = DependencyProperty.Register(
-        nameof(TreeItem), typeof(TreeItem), typeof(ExportOptions), new PropertyMetadata(default(TreeItem)));
+        get; set => this.Set(ref field, value);
+    } = true;
+
+Becomes:
+    public bool UseFilter
+    {
+        get; set => this.Set(ref field, value);
+    }
+
+    = true;
+*/
+#pragma warning disable SA1513 // Closing brace should be followed by blank line
+#pragma warning disable SA1500 // Braces for multi-line statements should not share line
+
+public class ExportOptions : BaseNotifyObject
+{
+    public bool UseFilter
+    {
+        get; set => this.Set(ref field, value);
+    }
 
     public TreeItem? TreeItem
     {
-        get { return (TreeItem?)this.GetValue(TreeItemProperty); }
-        set { this.SetValue(TreeItemProperty, value); }
+        get; set => this.Set(ref field, value);
     }
-
-    public static readonly DependencyProperty UseFilterProperty = DependencyProperty.Register(
-        nameof(UseFilter), typeof(bool), typeof(ExportOptions), new PropertyMetadata(true));
-
-    public bool UseFilter
-    {
-        get { return (bool)this.GetValue(UseFilterProperty); }
-        set { this.SetValue(UseFilterProperty, value); }
-    }
-
-    public static readonly DependencyProperty RecurseProperty = DependencyProperty.Register(
-        nameof(Recurse), typeof(bool), typeof(ExportOptions), new PropertyMetadata(false));
 
     public bool Recurse
     {
-        get { return (bool)this.GetValue(RecurseProperty); }
-        set { this.SetValue(RecurseProperty, value); }
+        get; set => this.Set(ref field, value);
     }
 
-    public bool ExportXamlStyle { get; set; }
+    public bool ExportXamlStyle
+    {
+        get; set => this.Set(ref field, value);
+    } = true;
 
-    public bool IncludeDefaultEmptyValues { get; set; }
+    public bool IncludeDefaultEmptyValues
+    {
+        get; set => this.Set(ref field, value);
+    } = false;
 
-    public bool IncludeTypenameOnlyValues { get; set; }
+    public bool IncludeTypenameOnlyValues
+    {
+        get; set => this.Set(ref field, value);
+    } = false;
 
-    public bool IncludeSystemCollectionNamespaceValues { get; set; }
+    public bool IncludeSystemCollectionNamespaceValues
+    {
+        get; set => this.Set(ref field, value);
+    } = false;
 
-    public bool RoundDecimals { get; set; }
+    public bool RoundDecimals
+    {
+        get; set => this.Set(ref field, value);
+    } = true;
 }
+#pragma warning restore SA1513 // Closing brace should be followed by blank line
+#pragma warning restore SA1500 // Braces for multi-line statements should not share line
 
 public class XMLTreeExporter
 {
+    private static bool IsSimpleType(Type type) => type.IsPrimitive || type == typeof(decimal) || type == typeof(DateTime) || type == typeof(DateTimeOffset) || type == typeof(TimeSpan) || type == typeof(Guid);
+
     private static readonly Dictionary<Type, object?> defaultValueCache = new();
-
-    private static object? GetDefaultValue(Type type)
-    {
-        if (!defaultValueCache.TryGetValue(type, out var defaultValue))
-        {
-            defaultValue = Activator.CreateInstance(type);
-            defaultValueCache[type] = defaultValue;
-        }
-
-        return defaultValue;
-    }
 
     public void Export(TreeItem treeItem, TextWriter textWriter, PropertyFilter? filter, bool recurse = true)
     {
@@ -136,10 +156,14 @@ public class XMLTreeExporter
                     var skipValue = false;
                     skipValue |= rawVal is null;
                     skipValue |= rawVal is string strVal && string.IsNullOrEmpty(strVal);
-                    if (!skipValue && propertyInformation.PropertyType.Type.IsValueType == true)
+                    if (!skipValue && IsSimpleType(propertyInformation.PropertyType.Type))
                     {
-                        var defaultVal = GetDefaultValue(rawVal!.GetType());
-                        if (rawVal.Equals(defaultVal))
+                        if (!defaultValueCache.TryGetValue(propertyInformation.PropertyType.Type, out var defaultValue))
+                        {
+                            defaultValueCache[propertyInformation.PropertyType.Type] = defaultValue = Activator.CreateInstance(propertyInformation.PropertyType.Type);
+                        }
+
+                        if (rawVal!.Equals(defaultValue))
                         {
                             skipValue = true;
                         }
