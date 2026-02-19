@@ -198,6 +198,10 @@ public class XMLTreeExporter
                         double d => d.ToString("0.#"),
                         float f => f.ToString("0.#"),
                         decimal m => m.ToString("0.#"),
+                        Size sz => $"{sz.Width:0.#}x{sz.Height:0.#}",
+                        Point pt => $"({pt.X:0.#},{pt.Y:0.#})",
+                        Thickness thick => $"{(thick.Left == thick.Right && thick.Right == thick.Top && thick.Top == thick.Bottom ? thick.Left.ToString("0.#") : $"{thick.Left:0.#},{thick.Top:0.#},{thick.Right:0.#},{thick.Bottom:0.#}")}",
+                        System.Windows.Media.Geometry geo => $"{geo?.GetOutlinedPathGeometry()?.Figures?.Count} Geo Figures",
                         _ => rawVal.ToString()
                     };
                 }
