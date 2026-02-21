@@ -25,12 +25,40 @@ public class XMLTreeExporterTests
     }
 
     [Test]
+    public Task TestTreeWithXamlStyleSimplifiedOpts()
+    {
+        var options = GetNewStyleOptions(true);
+        options.ExportXamlStyle = true;
+        return RunTest(new(string.Empty, false), options, true);
+    }
+
+    [Test]
+    public Task TestTreeWithXamlStyle()
+    {
+        var options = GetOldStyleOptions(true);
+        options.ExportXamlStyle = true;
+
+        return RunTest(new(string.Empty, false), options, true);
+    }
+
+    [Test]
     public Task TestTreeWithoutPropertyFilter()
+    {
+        return RunTest(new(string.Empty, false), GetOldStyleOptions(true));
+    }
+
+    [Test]
+    public Task TestTreeWithoutPropertyFilterSimplified()
+    {
+        return RunTest(new(string.Empty, false), GetNewStyleOptions(true));
+    }
+
+    private static Task RunTest(PropertyFilter filter, ExportOptions options, bool useDecimals = false)
     {
         var textWriter = new StringWriter();
 
         var exporter = new XMLTreeExporter();
-        exporter.Export(GetTestTreeItem(), textWriter, new(string.Empty, false), true);
+        exporter.Export(useDecimals ? GetTestTreeItemWithDecimals() : GetTestTreeItem(), textWriter, filter, options);
 
         var result = textWriter.ToString();
 
@@ -40,40 +68,39 @@ public class XMLTreeExporterTests
     [Test]
     public Task TestTreeWithPropertyFilter()
     {
-        var textWriter = new StringWriter();
+        return RunTest(new("Height", false), GetOldStyleOptions(true));
+    }
 
-        var exporter = new XMLTreeExporter();
-        exporter.Export(GetTestTreeItem(), textWriter, new("Height", false), true);
+    private static ExportOptions GetNewStyleOptions(bool recurse)
+    {
+        return new ExportOptions() { Recurse = recurse, IncludeDefaultEmptyValues = false, ExportXamlStyle = false, RoundDecimals = true, IncludeTypenameOnlyValues = false, IncludeSystemCollectionNamespaceValues = false };
+    }
 
-        var result = textWriter.ToString();
-
-        return Verifier.Verify(result);
+    private static ExportOptions GetOldStyleOptions(bool recurse)
+    {
+        return new ExportOptions() { Recurse = recurse, IncludeDefaultEmptyValues = true, ExportXamlStyle = false, RoundDecimals = false, IncludeTypenameOnlyValues = true, IncludeSystemCollectionNamespaceValues = true };
     }
 
     [Test]
     public Task TestElementWithoutPropertyFilter()
     {
-        var textWriter = new StringWriter();
-
-        var exporter = new XMLTreeExporter();
-        exporter.Export(GetTestTreeItem(), textWriter, new(string.Empty, false), false);
-
-        var result = textWriter.ToString();
-
-        return Verifier.Verify(result);
+        return RunTest(new(string.Empty, false), GetOldStyleOptions(false));
     }
 
     [Test]
     public Task TestElementWithPropertyFilter()
     {
-        var textWriter = new StringWriter();
+        return RunTest(new("Height", false), GetOldStyleOptions(false));
+    }
 
-        var exporter = new XMLTreeExporter();
-        exporter.Export(GetTestTreeItem(), textWriter, new("Height", false), false);
-
-        var result = textWriter.ToString();
-
-        return Verifier.Verify(result);
+    private static TreeItem GetTestTreeItemWithDecimals()
+    {
+        var ret = GetTestTreeItem();
+        var sp = (StackPanel)ret.Target;
+        sp.Width = 123.456789;
+        sp.Height = 987.65432;
+        sp.Margin = new Thickness(1.23456789, 9.87654321, 0, 0);
+        return ret;
     }
 
     private static TreeItem GetTestTreeItem()

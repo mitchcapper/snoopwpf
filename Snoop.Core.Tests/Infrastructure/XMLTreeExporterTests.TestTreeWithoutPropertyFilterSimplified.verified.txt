@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-16" standalone="yes"?>
+<node name="" displayName=" (StackPanel)" targetType="System.Windows.Controls.StackPanel">
+  <properties>
+    <property displayName="DesiredSize" value="0x0" />
+    <property displayName="HasLogicalOrientationPublic" value="True" />
+    <property displayName="IsArrangeValid" value="True" />
+    <property displayName="IsInitialized" value="True" />
+    <property displayName="IsInputMethodEnabled" value="True" />
+    <property displayName="LogicalOrientationPublic" value="Vertical" />
+    <property displayName="RenderSize" value="0x0" />
+  </properties>
+  <node name="" displayName=" (TextBlock)" targetType="System.Windows.Controls.TextBlock">
+    <properties>
+      <property displayName="BreakAfter" value="BreakDesired" />
+      <property displayName="BreakBefore" value="BreakDesired" />
+      <property displayName="DefaultStyleKey" value="System.Windows.Controls.TextBlock" />
+      <property displayName="DesiredSize" value="0x0" />
+      <property displayName="IsInitialized" value="True" />
+      <property displayName="IsInputMethodEnabled" value="True" />
+      <property displayName="Parent" value="System.Windows.Controls.StackPanel" />
+      <property displayName="RenderSize" value="0x0" />
+      <property displayName="Text" value="test" />
+      <property displayName="TextTrimming" value="None" />
+      <property displayName="TextWrapping" value="NoWrap" />
+    </properties>
+  </node>
+  <node name="" displayName=" (Border)" targetType="System.Windows.Controls.Border">
+    <properties>
+      <property displayName="Child" value="System.Windows.Controls.CheckBox Content:check IsChecked:False" />
+      <property displayName="DesiredSize" value="0x0" />
+      <property displayName="IsArrangeValid" value="True" />
+      <property displayName="IsInitialized" value="True" />
+      <property displayName="IsInputMethodEnabled" value="True" />
+      <property displayName="Parent" value="System.Windows.Controls.StackPanel" />
+      <property displayName="RenderSize" value="0x0" />
+    </properties>
+    <node name="" displayName=" (CheckBox)" targetType="System.Windows.Controls.CheckBox">
+      <properties>
+        <property displayName="Background" value="#FFFFFFFF" />
+        <property displayName="BorderBrush" value="#FF707070" />
+        <property displayName="BorderThickness" value="1" />
+        <property displayName="Content" value="check" />
+        <property displayName="DefaultStyleKey" value="System.Windows.Controls.CheckBox" />
+        <property displayName="DesiredSize" value="0x0" />
+        <property displayName="Foreground" value="#FF000000" />
+        <property displayName="HasContent" value="True" />
+        <property displayName="IsArrangeValid" value="True" />
+        <property displayName="IsInitialized" value="True" />
+        <property displayName="Padding" value="4,-1,0,0" />
+        <property displayName="Parent" value="System.Windows.Controls.Border" />
+        <property displayName="RenderSize" value="0x0" />
+      </properties>
+    </node>
+  </node>
+</node>

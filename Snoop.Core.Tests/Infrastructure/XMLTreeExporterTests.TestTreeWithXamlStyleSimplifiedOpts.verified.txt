@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-16" standalone="yes"?>
+<StackPanel DesiredSize="0x0" HasLogicalOrientationPublic="True" Height="987.7" IsArrangeValid="True" IsInitialized="True" IsInputMethodEnabled="True" LogicalOrientationPublic="Vertical" Margin="1.2,9.9,0,0" RenderSize="0x0" Width="123.5">
+  <TextBlock BreakAfter="BreakDesired" BreakBefore="BreakDesired" DefaultStyleKey="System.Windows.Controls.TextBlock" DesiredSize="0x0" IsInitialized="True" IsInputMethodEnabled="True" Parent="System.Windows.Controls.StackPanel" RenderSize="0x0" Text="test" TextTrimming="None" TextWrapping="NoWrap" />
+  <Border Child="System.Windows.Controls.CheckBox Content:check IsChecked:False" DesiredSize="0x0" IsArrangeValid="True" IsInitialized="True" IsInputMethodEnabled="True" Parent="System.Windows.Controls.StackPanel" RenderSize="0x0">
+    <CheckBox Background="#FFFFFFFF" BorderBrush="#FF707070" BorderThickness="1" Content="check" DefaultStyleKey="System.Windows.Controls.CheckBox" DesiredSize="0x0" Foreground="#FF000000" HasContent="True" IsArrangeValid="True" IsInitialized="True" Padding="4,-1,0,0" Parent="System.Windows.Controls.Border" RenderSize="0x0" />
+  </Border>
+</StackPanel>
